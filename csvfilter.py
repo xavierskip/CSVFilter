@@ -5,37 +5,50 @@
 列数的计数从0开始
 """
 import csv
+import random
 from collections import defaultdict
 
-def names_list(csvfile):
-    with open(csvfile, encoding="GBK") as fp:
+def read_csv_to_list(csvfile, encoding="GBK"):
+    with open(csvfile, encoding=encoding) as fp:
         csvreader = csv.reader(fp)
-        namelist = [''.join(row) for row in csvreader]
-    return namelist
+        # 标题行去除？
+        return  [row for row in csvreader]
 
-def cards_list(csvfile):
-    with open(csvfile, encoding="GBK") as fp:
-        csvreader = csv.reader(fp)
-        cardslist = [row for row in csvreader]
-    return cardslist  # 标题行去除？
-
-def run(namesfile, cardsfile, columnfilter, outputfile):
-    names = names_list(namesfile)
-    cards = cards_list(cardsfile)
-    print("{}\n读取{}个名字".format(','.join(names), len(names)))
-
+def run(namesfile, cardsfile, columnfilter, outputfile, sample=0):
+    # names_samples row[0] is the name for filter
+    # names_samples row[1] is the int numbers to choose sample
+    # sample = 0 means get all of it,don't sample
+    names_samples = read_csv_to_list(namesfile)
+    cards = read_csv_to_list(cardsfile)
+    names = []
+    samples = {}
+    for row in names_samples:
+        name = row[0]
+        names.append(name)
+        try:
+            # row[1] maybe raise IndexErroe
+            samples[name] = int(row[1])
+        except IndexError:
+            samples[name] = sample
+    print("读取{}行".format(len(names)))
+    # get the  name index of the cards
     name_index = defaultdict(list)
-    for i,card in enumerate(cards):
+    for i, card in enumerate(cards):
         name = card[columnfilter]
         if name in names:
             name_index[name].append(i)
-
+    
     for name in names:
         idxs = name_index[name]
         if idxs:
-            print("{:<4}在第{}行找到".format(name,
-                ','.join(map(str, idxs)))  # index start with zero
-                )
+            k = samples[name]
+            if k > 0 and k < len(idxs):
+                name_index[name] = random.sample(idxs, k)
+                print("{:<4}抽取{}个".format(name,k))
+            else:  # select all, do not sample
+                print("{:<4}在第{}行找到".format(name,
+                    ','.join(map(str, idxs)))  # index start with zero
+                    )
         else:
             print("{:<4}未找到".format(name))
 
