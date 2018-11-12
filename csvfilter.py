@@ -51,7 +51,9 @@ def run(namesfile, cardsfile, columnfilter, outputfile, sample=0):
                     )
         else:
             print("{:<4}未找到".format(name))
-
+    
+    if not outputfile.endswith('.csv'):
+        outputfile += '.csv'
     with open(outputfile, 'w', newline='') as fp:
         csvwriter = csv.writer(fp, delimiter=',',
                                 quotechar='|', quoting=csv.QUOTE_MINIMAL)
