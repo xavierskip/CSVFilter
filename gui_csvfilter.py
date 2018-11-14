@@ -14,7 +14,7 @@ def main():
     parser.add_argument("names", help="名字csv文件", widget='FileChooser')
     parser.add_argument("cards", help="卡片csv文件", widget='FileChooser')
     parser.add_argument("-c", "--column", type=int,
-                        default=4, help="名字所在的列数")
+                        default=4, help="名字所在第几列")
     parser.add_argument("-k", "--sample", type=int,
                         default='0', help="抽样数目,0为不抽样")
     parser.add_argument("-o", "--output", default='结果.csv',
