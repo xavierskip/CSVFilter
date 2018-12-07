@@ -1,3 +1,5 @@
+warning：just read GBK encode CSV file if the with other unASCII chart.
+
 基于 Python3  
 图形界面需要 Gooey  
 可执行文件打包需要 PyInstaller
